@@ -1,3 +1,7 @@
+//Binary Search, each time check where the mid element is, if it is in the left half or right half, then check if the target lies in the left half or right half, then accordingly update the low and high pointers.
+//Time Complexity: O(logn)
+//Space Complexity: O(1)
+
 #include<bits/stdc++.h>
 using namespace std;
 
