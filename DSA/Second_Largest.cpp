@@ -1,3 +1,7 @@
+//Sort the array in ascending order and then find the second largest element in the array.
+//Time Complexity: O(nlogn)
+//Space Complexity: O(1)
+
 #include<bits/stdc++.h>
 using namespace std;
 
