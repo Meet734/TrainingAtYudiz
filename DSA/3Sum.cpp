@@ -1,3 +1,6 @@
+//sort array first and then fix one element and then find the other two elements using two pointer approach
+//Time Complexity = O(n^2)
+//Space Complexity = O(n)
 #include<bits/stdc++.h>
 using namespace std;
 
