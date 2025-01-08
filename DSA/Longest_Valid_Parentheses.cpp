@@ -1,3 +1,6 @@
+//keep track of the index of the last '(', which hasn't been matched. Initialize the stack by -1.
+//Time Complexity = O(n)
+//Space Complexity = O(n)
 #include<bits/stdc++.h>
 using namespace std;
 
