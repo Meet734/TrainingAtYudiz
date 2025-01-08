@@ -1,3 +1,7 @@
+//take two pointers, slow and fast. Move slow by 1 step and fast by 2 steps. When fast reaches the end, slow will be at the middle of the linked list.
+//Time Complexity: O(n)
+//Space Complexity: O(1)
+
 #include<bits/stdc++.h>
 using namespace std;
 
