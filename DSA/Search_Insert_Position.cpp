@@ -1,3 +1,7 @@
+//binary search to find the element if present, else compare the element with the mid element and return the insert position
+//Time Complexity: O(logn)
+//Space Complexity: O(1)
+
 #include<bits/stdc++.h>
 using namespace std;
 
