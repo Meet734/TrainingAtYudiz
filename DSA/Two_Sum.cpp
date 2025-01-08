@@ -1,3 +1,7 @@
+//Make Hash Map of the array and search for the complement in the hash map, complement = target - a[i]
+//Time Complexity: O(n)
+//Space Complexity: O(n)
+
 #include <bits/stdc++.h>
 using namespace std;
 
