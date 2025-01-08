@@ -1,3 +1,7 @@
+//calculate sum until is is not negative and if it is negative then start again from 0
+//Time Complexity = O(n)
+//Space Complexity = O(1)
+
 #include<bits/stdc++.h>
 using namespace std;
 
