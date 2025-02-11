@@ -122,7 +122,7 @@ function updateAll(p, q){
             if(i == p || j == q){
                 emptyPos[i][j] += star;
             }
-            if(region[i][j] == region[p][q]){
+            if(i == p && j == q){
                 emptyPos[i][j] -= star;
             }
         }
