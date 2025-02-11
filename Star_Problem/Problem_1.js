@@ -104,34 +104,87 @@ function updateAll(p, q){
     for(let i=0;i<row;i++){
         for(let j=0;j<col;j++){
             if(i == p && j == q){
-                emptyPos[i][j] = 1;
+                emptyPos[i][j] += star;
 
                 if((i-1)>=0 && (j-1)>=0){
-                    emptyPos[i-1][j-1] = 1;
+                    emptyPos[i-1][j-1] += star;
                 }
                 if((i-1)>=0 && (j+1)<col){
-                    emptyPos[i-1][j+1] = 1;
+                    emptyPos[i-1][j+1] += star;
                 }
                 if((i+1)<row && (j-1)>=0){
-                emptyPos[i+1][j-1] = 1;
+                emptyPos[i+1][j-1] += star;
                 }
                 if((i+1)<row && (j+1)<col){
-                    emptyPos[i+1][j+1] = 1;
+                    emptyPos[i+1][j+1] += star;
                 }
             }
             if(i == p || j == q){
-                emptyPos[i][j] = 1;
+                emptyPos[i][j] += star;
             }
             if(region[i][j] == region[p][q]){
-                emptyPos[i][j] = 1;
+                emptyPos[i][j] += star;
             }
         }
     }
 }
 
+
 function removeStar(){
-    console.log("\t\t##Not Yet...##");
+    let position = readline.question("Enter position to remove star: ");
+    removeMove(position);
 }
+
+//Remove logic
+function removeMove(position){
+    let idx = 1;
+    for(let i=0;i<row;i++){
+        for(let j=0;j<col;j++){
+            if(idx == position){
+                if(starPos[i][j] == 0){
+                    console.log("\t\t##Star not present at this position##");
+                }
+                else{
+                    starPos[i][j] = 0;
+                    star--;
+                    updateRemove(i, j);
+                }
+            }
+            idx++;
+        }
+    }
+}
+
+function updateRemove(p, q){
+    let value = emptyPos[p][q];
+    for(let i=0;i<row;i++){
+        for(let j=0;j<col;j++){
+            if(i == p && j == q){
+                emptyPos[i][j] -= value;
+
+                if((i-1)>=0 && (j-1)>=0){
+                    emptyPos[i-1][j-1] -= value;
+                }
+                if((i-1)>=0 && (j+1)<col){
+                    emptyPos[i-1][j+1] -= value;
+                }
+                if((i+1)<row && (j-1)>=0){
+                emptyPos[i+1][j-1] -= value;
+                }
+                if((i+1)<row && (j+1)<col){
+                    emptyPos[i+1][j+1] -= value;
+                }
+            }
+            if(i == p || j == q){
+                emptyPos[i][j] -= value;
+            }
+            if(i == p && j == q){
+                emptyPos[i][j] += value;
+            }
+        }
+    }
+}
+
 let win = false;
 while(!win){
     printBoard();
@@ -139,9 +192,8 @@ while(!win){
     options();
     takeInput();
     
-    win = (star == 5);
-
     // console.log(emptyPos);
+    win = (star > 5);
 }
 
 if(win){
