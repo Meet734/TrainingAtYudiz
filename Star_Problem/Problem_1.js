@@ -89,7 +89,7 @@ function placeMove(position){
                 else if(emptyPos[i][j] == 0){
                     starPos[i][j] = 1;
                     star++;
-                    updateAll(i, j);
+                    updateAll(i, j, 'add');
                 }
                 else{
                     console.log("\t\t##Star cannot be placed at this position##");
@@ -100,35 +100,38 @@ function placeMove(position){
     }
 }
 
-function updateAll(p, q){
+
+function updateAll(p, q, op){
+    let val = star;
+    if(op === 'remove'){
+        val = -emptyPos[p][q];
+    }
     for(let i=0;i<row;i++){
         for(let j=0;j<col;j++){
             if(i == p && j == q){
-                emptyPos[i][j] += star;
 
-                if((i-1)>=0 && (j-1)>=0){
-                    emptyPos[i-1][j-1] += star;
+                if((i-1)>=0 && (j-1)>=0 && (region[i-1][j-1] != region[p][q])){
+                    emptyPos[i-1][j-1] += val;
                 }
-                if((i-1)>=0 && (j+1)<col){
-                    emptyPos[i-1][j+1] += star;
+                if((i-1)>=0 && (j+1)<col && (region[i-1][j+1] != region[p][q])){
+                    emptyPos[i-1][j+1] += val;
                 }
-                if((i+1)<row && (j-1)>=0){
-                emptyPos[i+1][j-1] += star;
+                if((i+1)<row && (j-1)>=0 && (region[i+1][j-1] != region[p][q])){
+                emptyPos[i+1][j-1] += val;
                 }
-                if((i+1)<row && (j+1)<col){
-                    emptyPos[i+1][j+1] += star;
+                if((i+1)<row && (j+1)<col && (region[i+1][j+1] != region[p][q])){
+                    emptyPos[i+1][j+1] += val;
                 }
             }
             if(i == p || j == q){
-                emptyPos[i][j] += star;
+                emptyPos[i][j] += val;
             }
-            if(i == p && j == q){
-                emptyPos[i][j] -= star;
+            if((i != p && j != q) && region[i][j] === region[p][q]){
+                emptyPos[i][j] += val;
             }
         }
     }
 }
-
 
 function removeStar(){
     let position = readline.question("Enter position to remove star: ");
@@ -147,40 +150,10 @@ function removeMove(position){
                 else{
                     starPos[i][j] = 0;
                     star--;
-                    updateRemove(i, j);
+                    updateAll(i, j, 'remove');
                 }
             }
             idx++;
-        }
-    }
-}
-
-function updateRemove(p, q){
-    let value = emptyPos[p][q];
-    for(let i=0;i<row;i++){
-        for(let j=0;j<col;j++){
-            if(i == p && j == q){
-                emptyPos[i][j] -= value;
-
-                if((i-1)>=0 && (j-1)>=0){
-                    emptyPos[i-1][j-1] -= value;
-                }
-                if((i-1)>=0 && (j+1)<col){
-                    emptyPos[i-1][j+1] -= value;
-                }
-                if((i+1)<row && (j-1)>=0){
-                emptyPos[i+1][j-1] -= value;
-                }
-                if((i+1)<row && (j+1)<col){
-                    emptyPos[i+1][j+1] -= value;
-                }
-            }
-            if(i == p || j == q){
-                emptyPos[i][j] -= value;
-            }
-            if(i == p && j == q){
-                emptyPos[i][j] += value;
-            }
         }
     }
 }
