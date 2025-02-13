@@ -36,7 +36,8 @@ function options(){
     console.log("1. Add Star");
     console.log("2. Remove Star");
     console.log("3. Get Hint");
-    console.log("4. Exit");
+    console.log("4. Get Solution");
+    console.log("Any other key to exit");
 }
 
 function takeInput(){
@@ -52,10 +53,10 @@ function takeInput(){
             getHint();
             break;
         case '4':
-            process.exit();
+            getSolution();
             break;
         default:
-            console.log("Invalid choice");
+            process.exit();
     }
 }
 
@@ -293,6 +294,16 @@ function initializeGame(){
         }
     }
     setAll();
+}
+
+function getSolution(){
+    for(let i=0;i<row;i++){
+        for(let j=0;j<col;j++){
+            starPos[i][j] = solution[i][j];
+        }
+    }
+    star = matrix+1;
+    printBoard();
 }
 
 let win = false;
