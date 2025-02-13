@@ -5,15 +5,9 @@ let row = 5;
 let col = 5;
 let star = 1;
 
-let region, starPos, emptyPos, cells;
-// const region = Array.from({ length: row }, () => Array(col).fill(null));
-const color = ['red', 'white', 'blue', 'green', 'navy', 'yellow', 'black', 'silver', 'copper'];
-
-// const cells = new Array(row*col);
-// cells.fill(0);
-
-// let starPos = Array.from({ length: row }, () => Array(col).fill(0));
-// let emptyPos = Array.from({ length: row }, () => Array(col).fill(0));
+let region, starPos, emptyPos, cells, solution;
+// const color = ['red', 'white', 'blue', 'green', 'navy', 'yellow', 'black', 'silver', 'copper'];
+const color = ['🟥','🟧','🟨','🟩','🟦','🟪','🟫','⬛','⬜'];
 
 function printLine(){
     console.log("-------------------------------------");
@@ -41,7 +35,8 @@ function printBoard() {
 function options(){
     console.log("1. Add Star");
     console.log("2. Remove Star");
-    console.log("3. Exit");
+    console.log("3. Get Hint");
+    console.log("4. Exit");
 }
 
 function takeInput(){
@@ -54,6 +49,9 @@ function takeInput(){
             removeStar();
             break;
         case '3':
+            getHint();
+            break;
+        case '4':
             process.exit();
             break;
         default:
@@ -168,11 +166,12 @@ function findSolution(){
         region[i][column] = color[i];
         cells[i] = 1;
 
-        console.log(region);
+        // console.log(region);
         updateAll(i, column, 'add');
     }
 
-    console.log(starPos);
+    // console.log(starPos);
+    solution = JSON.parse(JSON.stringify(starPos));
     constructRegion();
     setAll();
 }
@@ -201,30 +200,81 @@ function constructRegion(){
         let cellPos = Math.floor(Math.random()*(cells.length));
         let i = Math.floor(cellPos/col); //row of cell
         let j = cellPos%col; //column of cell
-        let neighbors = new Array(); //colors in the neighbor of cell
+        let neighbors = new Set(); //colors in the neighbor of cell
 
         if(region[i][j] != null){
             continue;
         }
         
         if((i-1)>=0 && region[i-1][j] != null){
-            neighbors.push(region[i-1][j])
+            neighbors.add(region[i-1][j])
         }
         if((j+1)<col && region[i][j+1] != null){
-            neighbors.push(region[i][j+1]);
+            neighbors.add(region[i][j+1]);
         }
         if((i+1)<row && region[i+1][j] != null){
-            neighbors.push(region[i+1][j]);
+            neighbors.add(region[i+1][j]);
         }
         if((j-1)>=0 && region[i][j-1] != null){
-            neighbors.push(region[i][j-1]);
+            neighbors.add(region[i][j-1]);
         }
 
-        if(neighbors.length != 0){
-            region[i][j] = neighbors[Math.floor(Math.random()*neighbors.length)];
+        let unique = Array.from(neighbors)
+        if(unique.length != 0){
+            if(unique.length != neighbors.size){
+                console.log("neighbors: ", neighbors, "Unique: ", unique);
+            }
+            region[i][j] = unique[Math.floor(Math.random()*unique.length)];
             temp++;
         }
         // console.log("color: ", region);
+    }
+}
+
+
+function getHint(){
+    let position = 1;
+    let anotherPosition = 1;
+    let userIdx = 1;
+    let solutionIdx = 1;
+
+    if(star == 1){
+        for(let i=0;i<col;i++){
+            if(solution[0][i] == 1){
+                solutionIdx = i+1;
+            }
+        }
+        console.log(`💡 Place Star at ${solutionIdx} 💡`);
+        return;
+    }
+
+    for(let i=0;i<row;i++){
+        let isEmpty = true;
+
+        for(let j=0;j<col;j++){
+            if(starPos[i][j] != 0){
+                isEmpty = false;
+                userIdx = position;
+            }
+            position++;
+        }
+
+        for(let j=0;j<col;j++){
+            if(solution[i][j] != 0){
+                solutionIdx = anotherPosition;
+            }
+            anotherPosition++;
+        }
+
+        if(isEmpty){
+            console.log(`💡 Place Star at ${solutionIdx} 💡`);
+            break;
+        }
+
+        if(userIdx != solutionIdx){
+            console.log(`💡 Place Star at ${solutionIdx} instead of ${userIdx} 💡`);
+            break;
+        }
     }
 }
 
@@ -264,6 +314,6 @@ while(!win){
 
 if(win){
     printLine();
-    console.log("\t\t###Congratulations! You have won the game##");
+    console.log("\t\t🏆🏆🏆Congratulations! You have won the game🏆🏆🏆");
     printLine();
 }
