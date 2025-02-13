@@ -145,10 +145,22 @@ function updateAll(p, q, op){
 }
 
 function findSolution(){
+    setAll();
     for(let i=0;i<row;i++){
         let column = Math.floor(Math.random()*matrix);
-    
+        let flag = false;
+
         while(emptyPos[i][column] != 0){
+            for(let j=0;j<col;j++){
+                if(emptyPos[i][j] == 0){
+                    flag = true;
+                    break;
+                }
+            }
+            if(!flag){
+                findSolution();
+                return;
+            }
             column = Math.floor(Math.random()*matrix);
         }
         
