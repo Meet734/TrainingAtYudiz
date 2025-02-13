@@ -1,29 +1,19 @@
 const readline = require('readline-sync');
 
+let matrix = 5;
 let row = 5;
 let col = 5;
 let star = 1;
 
-const region = Array.from({ length: row }, () => Array(col).fill(null));
-const color = ['red', 'white', 'blue', 'green', 'navy'];
+let region, starPos, emptyPos, cells;
+// const region = Array.from({ length: row }, () => Array(col).fill(null));
+const color = ['red', 'white', 'blue', 'green', 'navy', 'yellow', 'black', 'silver', 'copper'];
 
-const cells = new Array(25);
-cells.fill(0);
+// const cells = new Array(row*col);
+// cells.fill(0);
 
-let starPos = [
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0]
-];
-let emptyPos = [
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0]
-];
+// let starPos = Array.from({ length: row }, () => Array(col).fill(0));
+// let emptyPos = Array.from({ length: row }, () => Array(col).fill(0));
 
 function printLine(){
     console.log("-------------------------------------");
@@ -155,17 +145,30 @@ function updateAll(p, q, op){
 }
 
 function findSolution(){
+    setAll();
     for(let i=0;i<row;i++){
-        let column = Math.floor(Math.random()*5);
-    
+        let column = Math.floor(Math.random()*matrix);
+        let flag = false;
+
         while(emptyPos[i][column] != 0){
-            column = Math.floor(Math.random()*5);
+            for(let j=0;j<col;j++){
+                if(emptyPos[i][j] == 0){
+                    flag = true;
+                    break;
+                }
+            }
+            if(!flag){
+                findSolution();
+                return;
+            }
+            column = Math.floor(Math.random()*matrix);
         }
         
         starPos[i][column] = 1;
         region[i][column] = color[i];
         cells[i] = 1;
 
+        console.log(region);
         updateAll(i, column, 'add');
     }
 
@@ -175,25 +178,26 @@ function findSolution(){
 }
 
 function setAll(){
-    starPos = [
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0]
-    ];
-    emptyPos = [
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0]
-    ];
+    starPos = new Array(row);
+    for (let i=0;i<row;i++) {
+        starPos[i] = [];
+        for(let j=0;j<col;j++){
+            starPos[i][j] = 0;
+        }
+    }
+    emptyPos = new Array(row);
+    for (let i=0;i<row;i++) {
+        emptyPos[i] = [];
+        for(let j=0;j<col;j++){
+            emptyPos[i][j] = 0;
+        }
+    }
+    cells = new Array(row*col).fill(0);
 }
 
 function constructRegion(){
     let temp = 0;
-    while(temp < 20){
+    while(temp < (row*col-row)){
         let cellPos = Math.floor(Math.random()*(cells.length));
         let i = Math.floor(cellPos/col); //row of cell
         let j = cellPos%col; //column of cell
@@ -224,8 +228,27 @@ function constructRegion(){
     }
 }
 
+function initializeGame(){
+    matrix = readline.question("Enter Matrix size: ");
+    while(matrix < 5 || matrix > 9){
+        matrix = readline.question("Enter Matrix size: ");
+    }
+
+    row = col = matrix;
+    region = new Array(row);
+    for (let i=0;i<row;i++) {
+        region[i] = [];
+        for(let j=0;j<col;j++){
+            region[i][j] = null;
+        }
+    }
+    setAll();
+}
 
 let win = false;
+
+initializeGame();
+
 findSolution();
 
 while(!win){
@@ -236,7 +259,7 @@ while(!win){
     
     console.log(emptyPos);
     console.log(star);
-    win = (star > 5);
+    win = (star > matrix);
 }
 
 if(win){

@@ -2,7 +2,15 @@ const readline = require('readline-sync');
 
 let row = 5;
 let col = 5;
-let star = 0;
+let star = 1;
+
+const region = Array.from({ length: row }, () => Array(col).fill(null));
+const color = ['red', 'white', 'blue', 'green', 'navy'];
+const starIdx = new Array(5);
+const cells = new Array(25);
+cells.fill(0);
+
+/*
 const region = [
     ['Navy', 'Navy', 'Navy', 'Brown', 'Brown'],
     ['Navy', 'Navy', 'Navy', 'Brown', 'Brown'],
@@ -10,14 +18,16 @@ const region = [
     ['Red', 'Green', 'Blue', 'Blue', 'Brown'],
     ['Red', 'Green', 'Green', 'Blue', 'Blue']
 ];
-const starPos = [
+*/
+
+let starPos = [
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0]
 ];
-const emptyPos = [
+let emptyPos = [
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
@@ -28,15 +38,16 @@ const emptyPos = [
 function printLine(){
     console.log("-------------------------------------");
 }
-function printBoard(){
+
+function printBoard() {
     let board = "";
     let idx = 1;
 
-    for(let i=0;i<row;i++){
-        for(let j=0;j<col;j++){
-            board += ''+idx;
+    for (let i = 0; i < row; i++) {
+        for (let j = 0; j < col; j++) {
+            board += '' + idx;
             board += region[i][j];
-            if(starPos[i][j] == 1){
+            if (starPos[i][j] == 1) {
                 board += "*";
             }
             board += " | ";
@@ -46,7 +57,6 @@ function printBoard(){
     }
     console.log(board);
 }
-
 
 // printBoard();
 
@@ -100,6 +110,30 @@ function placeMove(position){
     }
 }
 
+function removeStar(){
+    let position = readline.question("Enter position to remove star: ");
+    removeMove(position);
+}
+
+//Remove logic
+function removeMove(position){
+    let idx = 1;
+    for(let i=0;i<row;i++){
+        for(let j=0;j<col;j++){
+            if(idx == position){
+                if(starPos[i][j] == 0){
+                    console.log("\t\t##Star not present at this position##");
+                }
+                else{
+                    starPos[i][j] = 0;
+                    star--;
+                    updateAll(i, j, 'remove');
+                }
+            }
+            idx++;
+        }
+    }
+}
 
 function updateAll(p, q, op){
     let val = star;
@@ -133,40 +167,92 @@ function updateAll(p, q, op){
     }
 }
 
-function removeStar(){
-    let position = readline.question("Enter position to remove star: ");
-    removeMove(position);
+
+function findSolution(){
+    for(let i=0;i<row;i++){
+        let column = Math.floor(Math.random()*5);
+    
+        while(emptyPos[i][column] != 0){
+            column = Math.floor(Math.random()*5);
+        }
+        
+        starPos[i][column] = 1;
+        region[i][column] = color[i];
+        // starIdx[i] = column;
+        cells[i] = 1;
+
+        updateAll(i, column, 'add');
+    }
+
+    console.log(starPos);
+    constructRegion();
+    setAll();
 }
 
-//Remove logic
-function removeMove(position){
-    let idx = 1;
-    for(let i=0;i<row;i++){
-        for(let j=0;j<col;j++){
-            if(idx == position){
-                if(starPos[i][j] == 0){
-                    console.log("\t\t##Star not present at this position##");
-                }
-                else{
-                    starPos[i][j] = 0;
-                    star--;
-                    updateAll(i, j, 'remove');
-                }
-            }
-            idx++;
+function setAll(){
+    starPos = [
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0]
+    ];
+    emptyPos = [
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0]
+    ];
+}
+
+function constructRegion(){
+    let temp = 0;
+    while(temp < 20){
+        let cellPos = Math.floor(Math.random()*(cells.length));
+        let i = Math.floor(cellPos/col); //row of cell
+        let j = cellPos%col; //column of cell
+        let neighbors = new Array(); //colors in the neighbor of cell
+
+        if(region[i][j] != null){
+            continue;
         }
+        
+        if((i-1)>=0 && region[i-1][j] != null){
+            neighbors.push(region[i-1][j])
+        }
+        if((j+1)<col && region[i][j+1] != null){
+            neighbors.push(region[i][j+1]);
+        }
+        if((i+1)<row && region[i+1][j] != null){
+            neighbors.push(region[i+1][j]);
+        }
+        if((j-1)>=0 && region[i][j-1] != null){
+            neighbors.push(region[i][j-1]);
+        }
+
+        if(neighbors.length != 0){
+            region[i][j] = neighbors[Math.floor(Math.random()*neighbors.length)];
+            temp++;
+        }
+        // console.log("color: ", region);
     }
 }
 
+
 let win = false;
+findSolution();
 while(!win){
     printBoard();
 
     options();
     takeInput();
     
-    // console.log(emptyPos);
+    console.log(emptyPos);
+    console.log(star);
     win = (star > 5);
+
+    // console.log(emptyPos);
 }
 
 if(win){
