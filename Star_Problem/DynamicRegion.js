@@ -22,7 +22,7 @@ function printBoard() {
             board += '' + idx;
             board += region[i][j];
             if (starPos[i][j] == 1) {
-                board += "*";
+                board += "❌";
             }
             board += " | ";
             idx++;
@@ -157,6 +157,11 @@ function findSolution(){
                 }
             }
             if(!flag){
+                for(let i=0;i<row;i++){
+                    for(let j=0;j<col;j++){
+                        region[i][j] = null;
+                    }
+                }
                 findSolution();
                 return;
             }
